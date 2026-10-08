@@ -1,0 +1,19 @@
+index.html
+  s_94939bae6bea16::t_fc2d89239689fb 9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "1fb49799fc68bc7d416df5c4fb913abc3d9ea30b",
+  "prompts": {},
+  "sessions": {
+    "s_94939bae6bea16": {
+      "agent_id": {
+        "tool": "gemini",
+        "id": "975eeb0d-bacc-40ce-91c8-1ec676efe9d8",
+        "model": "gemini-3.5-flash"
+      },
+      "human_author": "Noopur Jain <noopur.jain@foodpanda.com>"
+    }
+  }
+}
