@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TNG JSBridge Test</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --border: #334155;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --code-bg: #090d16;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      line-height: 1.5;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-bottom: 6px;
+    }
+
+    p.subtitle {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      margin-top: 10px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: #1e3a5f;
+      color: #7dd3fc;
+      border: 1px solid #0284c7;
+    }
+
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #38bdf8;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.875rem;
+      font-family: monospace;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    button {
+      flex: 1;
+      min-width: 130px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: #334155;
+      color: #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+      background: #475569;
+    }
+
+    .btn-sm {
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      flex: none;
+      min-width: unset;
+    }
+
+    #console-box {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.8rem;
+      max-height: 320px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .log-entry {
+      margin-bottom: 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #1e293b;
+      display: flex;
+      gap: 8px;
+    }
+
+    .log-time {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .log-content {
+      flex-grow: 1;
+    }
+
+    .log-info { color: #38bdf8; }
+    .log-success { color: var(--success); }
+    .log-warn { color: var(--warning); }
+    .log-error { color: var(--danger); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>TNG JSBridge Tester</h1>
+    <p class="subtitle">Touch 'n Go Digital Webview Auth Code Test</p>
+    <div id="status-badge" class="badge-status">
+      <span class="pulse"></span>
+      <span id="status-text">Waiting for tngdJSBridgeReady event...</span>
+    </div>
+  </header>
+
+  <div class="card">
+    <div class="card-title">Parameters</div>
+    <div class="form-group">
+      <label>Client ID</label>
+      <input type="text" id="clientId" value="dummy-client-id" />
+    </div>
+    <div class="form-group">
+      <label>Redirect URL</label>
+      <input type="text" id="redirectUrl" value="https://www.google.com" />
+    </div>
+    <div class="form-group">
+      <label>External Request ID</label>
+      <input type="text" id="extRequestId" value="some id" />
+    </div>
+    <div class="btn-group">
+      <button class="btn-primary" onclick="manualCall()">Manual Call getAuthCode</button>
+      <button class="btn-secondary" onclick="simulateBridge()">Simulate Ready in Browser</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <span>Console Logs (Live)</span>
+      <button class="btn-secondary btn-sm" onclick="clearLogs()">Clear</button>
+    </div>
+    <div id="console-box"></div>
+  </div>
+
+  <!-- On-screen console interceptor so logs are visible on mobile screens -->
+  <script>
+    const consoleBox = document.getElementById('console-box');
+    const statusText = document.getElementById('status-text');
+    const statusBadge = document.getElementById('status-badge');
+
+    function appendLog(type, ...args) {
+      const now = new Date().toTimeString().split(' ')[0] + '.' + String(new Date().getMilliseconds()).padStart(3, '0');
+      const text = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)).join(' ');
+      
+      const row = document.createElement('div');
+      row.className = 'log-entry';
+      
+      const timeSpan = document.createElement('span');
+      timeSpan.className = 'log-time';
+      timeSpan.innerText = now;
+
+      const contentSpan = document.createElement('span');
+      contentSpan.className = 'log-content ' + (type === 'error' ? 'log-error' : type === 'warn' ? 'log-warn' : 'log-info');
+      contentSpan.innerText = text;
+
+      row.appendChild(timeSpan);
+      row.appendChild(contentSpan);
+      consoleBox.appendChild(row);
+      consoleBox.scrollTop = consoleBox.scrollHeight;
+    }
+
+    const _origLog = console.log;
+    const _origWarn = console.warn;
+    const _origError = console.error;
+
+    console.log = function(...args) {
+      _origLog.apply(console, args);
+      appendLog('info', ...args);
+    };
+
+    console.warn = function(...args) {
+      _origWarn.apply(console, args);
+      appendLog('warn', ...args);
+    };
+
+    console.error = function(...args) {
+      _origError.apply(console, args);
+      appendLog('error', ...args);
+    };
+
+    function clearLogs() {
+      consoleBox.innerHTML = '';
+    }
+
+    function manualCall() {
+      const clientId = document.getElementById('clientId').value;
+      const redirectUrl = document.getElementById('redirectUrl').value;
+      const extRequestId = document.getElementById('extRequestId').value;
+
+      if (!window.tngdJSBridge || typeof window.tngdJSBridge.call !== 'function') {
+        console.error("window.tngdJSBridge is not available yet in this environment.");
+        return;
+      }
+
+      console.log("Manual trigger: attempting to call get auth code");
+      window.tngdJSBridge.call(
+        'getAuthCode',
+        {
+          scopes: ['BASE_USER_INFO'],
+          clientId: clientId,
+          redirectUrl: redirectUrl,
+          extRequestId: extRequestId,
+          grantType: 'AUTHORIZATION_CODE'
+        },
+        ({ authCode, errorCode }) => {
+          console.log("received from get auth code", authCode, errorCode);
+        }
+      );
+    }
+
+    function simulateBridge() {
+      console.log("Simulating mock window.tngdJSBridge...");
+      window.tngdJSBridge = {
+        call: (action, params, callback) => {
+          console.log(`[Mock Bridge] Called "${action}" with params:`, params);
+          setTimeout(() => {
+            callback({ authCode: "mock_auth_code_" + Math.random().toString(36).substring(2, 9), errorCode: null });
+          }, 500);
+        }
+      };
+      console.log("Dispatching tngdJSBridgeReady event...");
+      document.dispatchEvent(new Event('tngdJSBridgeReady'));
+    }
+  </script>
+
+  <!-- Required TNG JSBridge Code -->
+  <script>
+    console.log("WAITING for tngdJSBridgeReady event");
+    document.addEventListener('tngdJSBridgeReady', () => {
+      console.log("tng event received correctly");
+      if (statusText) statusText.innerText = "tngdJSBridgeReady event received!";
+      if (statusBadge) statusBadge.style.borderColor = "#22c55e";
+      
+      console.log("attempting to call get auth code");
+      window.tngdJSBridge.call(
+        'getAuthCode',
+        {
+          scopes: ['BASE_USER_INFO'],
+          clientId: "dummy-client-id",
+          redirectUrl: "https://www.google.com",
+          extRequestId: "some id",
+          grantType: 'AUTHORIZATION_CODE'
+        },
+        ({ authCode, errorCode }) => {
+          console.log("received from get auth code", authCode, errorCode);
+        }
+      );
+    });
+  </script>
+</body>
+</html>
