@@ -1,0 +1,16 @@
+index.html
+  h_6b3a7e3a3f66f6 7
+script.js
+  h_6b3a7e3a3f66f6 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "243a72fefb8b4c7e6165de367a34a9fe3069a700",
+  "prompts": {},
+  "humans": {
+    "h_6b3a7e3a3f66f6": {
+      "author": "Noopur Jain <noopur.jain@foodpanda.com>"
+    }
+  }
+}
