@@ -1,5 +1,5 @@
   console.log("WAITING for tngdJSBridgeReady in script");
-  doncument.addEventListener("load", () => {
+  document.addEventListener("load", () => {
     console.log("page load completed!"); 
     console.log("tngdJSBridge is", window.tngdJSBridge);
   })
